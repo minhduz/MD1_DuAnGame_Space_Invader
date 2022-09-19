@@ -5,11 +5,17 @@ import BulletController from "./BulletController.js";
 const canvas = document.getElementById('myCanvas')
 const ctx = canvas.getContext('2d')
 
+const displayplayerLives = document.getElementById('playerLives')
+
 canvas.width = 600
 canvas.height = 600
 
 const background = new Image()
 background.src = "images/space.png"
+
+const loseSound = new Audio("sounds/lose.mp3")
+const winSound = new Audio("sounds/win.mp3")
+const resurrectionSound = new Audio("sounds/resurrection.mp3")
 
 const playerBulletController = new BulletController(canvas,10,"red",true)
 const enemyBulletController = new BulletController(canvas,4,"white",false)
@@ -18,10 +24,15 @@ const enemyController = new EnemyController(
     enemyBulletController,
     playerBulletController
 );
+
+
+
 const player = new Player(canvas, 3, playerBulletController)
 
 let isGameOver = false;
 let didWin = false;
+let playerLives = 3;
+
 
 function game(){
     checkGameOver();
@@ -37,21 +48,51 @@ function game(){
 
 function displayGameOver(){
     if(isGameOver) {
-        let text = didWin ? "You Win" : "Game Over"
+        let text;
+        if (didWin){
+            text = "You Win"
+            winSound.play()
+        } else {
+            text = "You Lose"
+            loseSound.play()
+        }
         let textOffset = didWin ? 3.5 : 5
 
         ctx.fillStyle = "white";
         ctx.font = '70px Arial'
         ctx.fillText(text,canvas.width / textOffset, canvas.height / 2)
+        document.getElementById('reset').innerHTML = '<button onclick="window.reload()">Play again</button>'
     }
 }
 
+
 function checkGameOver(){
-    if(isGameOver){
-        return
+    if(enemyBulletController.collideWith(player)){
+        player.currentHealth -= player.healLossPerHit
+        console.log(player.currentHealth)
     }
 
-    if(enemyBulletController.collideWith(player)){
+    if(player.currentHealth === 0 ){
+        playerLives--
+        player.x = player.canvas.width/2 - 25
+        player.y = player.canvas.height - 75
+        player.width = 50
+        player.height = 48
+        player.currentHealth = player.maxHealth
+        resurrectionSound.play()
+    }
+
+    displayplayerLives.innerText = `Lives: ${playerLives}`
+
+    if(playerLives === 0 || enemyController.collideWith(player)){
+        isGameOver = true
+
+    } else {
+        isGameOver = false
+    }
+
+    if(enemyController.enemyRows.length === 0){
+        didWin = true;
         isGameOver = true
     }
 }

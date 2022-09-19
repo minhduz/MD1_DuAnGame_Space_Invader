@@ -11,12 +11,17 @@ export default class Player{
         this.velocity = velocity
         this.bulletController = bulletController
 
-        this.x = this.canvas.width/2
+        this.x = this.canvas.width/2 - 25
         this.y = this.canvas.height - 75
         this.width = 50
         this.height = 48
         this.image = new Image();
         this.image.src = "images/player.png"
+        this.maxHealth = this.width
+        this.healLossPerHit = 10
+        this.currentHealth = this.maxHealth
+
+
 
         document.addEventListener("keydown",this.keydown);
         document.addEventListener("keyup",this.keyup);
@@ -30,6 +35,10 @@ export default class Player{
         this.move();
         this.collideWithWall();
         ctx.drawImage(this.image,this.x,this.y,this.width,this.height)
+        ctx.fillRect(this.x,this.y+this.height+5,this.maxHealth,5)
+        ctx.fillStyle = 'green'
+        ctx.fillRect(this.x,this.y+this.height+5,this.currentHealth,5)
+
     }
 
     collideWithWall(){
