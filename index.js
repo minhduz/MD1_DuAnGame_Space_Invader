@@ -5,7 +5,7 @@ import BulletController from "./BulletController.js";
 const canvas = document.getElementById('myCanvas')
 const ctx = canvas.getContext('2d')
 
-const displayplayerLives = document.getElementById('playerLives')
+const displayPlayerLives = document.getElementById('playerLives')
 
 canvas.width = 600
 canvas.height = 600
@@ -38,6 +38,7 @@ function game(){
     checkGameOver();
     ctx.drawImage(background,0,0,canvas.width,canvas.height)
     displayGameOver();
+
     if(!isGameOver) {
         enemyController.draw(ctx)
         player.draw(ctx)
@@ -46,6 +47,14 @@ function game(){
     }
 }
 
+// function playSound(){
+//     if(didWin){}
+//     else{loseSound.play()}
+//     return
+// }
+
+
+let myTimeout
 function displayGameOver(){
     if(isGameOver) {
         let text;
@@ -55,7 +64,9 @@ function displayGameOver(){
         } else {
             text = "You Lose"
             loseSound.play()
+            clearInterval(myInterval)
         }
+
         let textOffset = didWin ? 3.5 : 5
 
         ctx.fillStyle = "white";
@@ -63,8 +74,19 @@ function displayGameOver(){
         ctx.fillText(text,canvas.width / textOffset, canvas.height / 2)
         document.getElementById('reset').innerHTML = '<button onclick="window.reload()">Play again</button>'
     }
-}
 
+}
+//CLEAR TIME OUT
+// function pauseAudio() {
+//     console.log('pause ===')
+//     loseSound.pause();
+//     clearInterval(myInterval)
+// }
+
+
+function myStopFunction() {
+
+}
 
 function checkGameOver(){
     if(enemyBulletController.collideWith(player)){
@@ -79,10 +101,12 @@ function checkGameOver(){
         player.width = 50
         player.height = 48
         player.currentHealth = player.maxHealth
-        resurrectionSound.play()
+        if (playerLives > 0){
+            resurrectionSound.play()
+        }
     }
 
-    displayplayerLives.innerText = `Lives: ${playerLives}`
+    displayPlayerLives.innerText = `Lives: ${playerLives}`
 
     if(playerLives === 0 || enemyController.collideWith(player)){
         isGameOver = true
@@ -97,4 +121,4 @@ function checkGameOver(){
     }
 }
 
-setInterval(game,1000/60);
+const myInterval = setInterval(game,1000/60);
