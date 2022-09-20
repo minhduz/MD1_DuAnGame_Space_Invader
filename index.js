@@ -47,20 +47,13 @@ function game(){
     }
 }
 
-// function playSound(){
-//     if(didWin){}
-//     else{loseSound.play()}
-//     return
-// }
-
-
-let myTimeout
 function displayGameOver(){
     if(isGameOver) {
         let text;
         if (didWin){
             text = "You Win"
             winSound.play()
+            clearInterval(myInterval)
         } else {
             text = "You Lose"
             loseSound.play()
@@ -72,19 +65,8 @@ function displayGameOver(){
         ctx.fillStyle = "white";
         ctx.font = '70px Arial'
         ctx.fillText(text,canvas.width / textOffset, canvas.height / 2)
-        document.getElementById('reset').innerHTML = '<button onclick="window.reload()">Play again</button>'
+
     }
-
-}
-//CLEAR TIME OUT
-// function pauseAudio() {
-//     console.log('pause ===')
-//     loseSound.pause();
-//     clearInterval(myInterval)
-// }
-
-
-function myStopFunction() {
 
 }
 
